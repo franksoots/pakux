@@ -1,0 +1,335 @@
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { useLanguage } from "../../components/language-provider";
+import LanguageSwitcher from "../../components/language-switcher";
+import { createClient } from "../../lib/supabase/client";
+
+export default function SignupPage() {
+  const { t, language } = useLanguage();
+  const router = useRouter();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [offer, setOffer] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  async function handleSignup(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault();
+
+    console.log("PAKUX: signup started");
+
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const supabase = createClient();
+
+      console.log("PAKUX: Supabase client created");
+
+      const {
+        data,
+        error: signupError,
+      } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          emailRedirectTo:
+            `${window.location.origin}/auth/confirm?next=/dashboard`,
+
+          data: {
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+            offer: offer.trim(),
+          },
+        },
+      });
+
+      console.log("PAKUX: signup response", {
+        data,
+        error: signupError,
+      });
+
+      if (signupError) {
+        setError(signupError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data.session) {
+        console.log(
+          "PAKUX: account created, redirecting to dashboard",
+        );
+
+        router.replace("/dashboard");
+        router.refresh();
+
+        return;
+      }
+
+      setSuccess(
+        language === "et"
+          ? "Konto on loodud. Kontrolli oma e-posti ja kinnita konto."
+          : "Account created. Check your email and confirm your account.",
+      );
+
+      setLoading(false);
+    } catch (err) {
+      console.error(
+        "PAKUX: signup error",
+        err,
+      );
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong.",
+      );
+
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="pk-auth-page">
+      <div className="pk-auth-background" />
+
+      <div className="pk-auth-topbar">
+        <Link
+          href="/"
+          className="pk-logo"
+        >
+          <span className="pk-logo-mark" />
+          <span className="pk-logo-text">
+            pakux
+          </span>
+        </Link>
+
+        <LanguageSwitcher />
+      </div>
+
+      <motion.div
+        className="pk-auth-container"
+        initial={{
+          opacity: 0,
+          y: 18,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+      >
+        <div className="pk-auth-card pk-auth-card-large">
+          <div className="pk-auth-header">
+            <div className="pk-eyebrow">
+              GET STARTED
+            </div>
+
+            <h1 className="pk-auth-title">
+              {t.auth.signupTitle}
+            </h1>
+
+            <p className="pk-auth-subtitle">
+              {t.auth.signupSubtitle}
+            </p>
+          </div>
+
+          <form
+            className="pk-auth-form"
+            onSubmit={handleSignup}
+          >
+            <div
+              className="pk-form-grid"
+              style={{
+                gap: 14,
+              }}
+            >
+              <div className="pk-field">
+                <label className="pk-label">
+                  {t.auth.firstName}
+                </label>
+
+                <input
+                  className="pk-input"
+                  type="text"
+                  value={firstName}
+                  onChange={(event) =>
+                    setFirstName(
+                      event.target.value,
+                    )
+                  }
+                  required
+                />
+              </div>
+
+              <div className="pk-field">
+                <label className="pk-label">
+                  {t.auth.lastName}
+                </label>
+
+                <input
+                  className="pk-input"
+                  type="text"
+                  value={lastName}
+                  onChange={(event) =>
+                    setLastName(
+                      event.target.value,
+                    )
+                  }
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="pk-field">
+              <label className="pk-label">
+                {t.auth.email}
+              </label>
+
+              <input
+                className="pk-input"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(event) =>
+                  setEmail(
+                    event.target.value,
+                  )
+                }
+                required
+              />
+            </div>
+
+            <div className="pk-field">
+              <label className="pk-label">
+                {t.auth.password}
+              </label>
+
+              <input
+                className="pk-input"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(event) =>
+                  setPassword(
+                    event.target.value,
+                  )
+                }
+                minLength={8}
+                required
+              />
+
+              <div className="pk-card-small">
+                {language === "et"
+                  ? "Kasuta vähemalt 8 tähemärki."
+                  : "Use at least 8 characters."}
+              </div>
+            </div>
+
+            <div className="pk-field">
+              <label className="pk-label">
+                {t.auth.whatSell}
+              </label>
+
+              <textarea
+                className="pk-textarea"
+                placeholder={
+                  language === "et"
+                    ? "Näiteks: professionaalne videotootmine Eesti ettevõtetele"
+                    : "For example: professional video production for businesses in Estonia"
+                }
+                value={offer}
+                onChange={(event) =>
+                  setOffer(
+                    event.target.value,
+                  )
+                }
+                required
+              />
+            </div>
+
+            {error && (
+              <div
+                style={{
+                  padding:
+                    "12px 14px",
+                  borderRadius: 10,
+                  border:
+                    "1px solid rgba(255,80,80,.25)",
+                  background:
+                    "rgba(255,80,80,.08)",
+                  color: "#ff8b8b",
+                  fontSize: 13,
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div
+                style={{
+                  padding:
+                    "12px 14px",
+                  borderRadius: 10,
+                  border:
+                    "1px solid rgba(90,220,170,.25)",
+                  background:
+                    "rgba(90,220,170,.08)",
+                  color: "#8ff0c8",
+                  fontSize: 13,
+                }}
+              >
+                {success}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="pk-button pk-auth-submit"
+              disabled={loading}
+            >
+              {loading
+                ? language === "et"
+                  ? "Konto loomine..."
+                  : "Creating account..."
+                : t.auth.signupButton}
+
+              {!loading && (
+                <span>→</span>
+              )}
+            </button>
+          </form>
+
+          <div className="pk-auth-footer">
+            <span>
+              {t.auth.haveAccount}
+            </span>
+
+            <Link href="/login">
+              {t.auth.login}
+            </Link>
+          </div>
+        </div>
+
+        <div className="pk-auth-note">
+          <span className="pk-status-dot" />
+
+          {t.auth.prototype}
+        </div>
+      </motion.div>
+    </main>
+  );
+}

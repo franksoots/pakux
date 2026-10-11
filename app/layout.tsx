@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./pakux-ui.css";
+import { LanguageProvider } from "../components/language-provider";
 
 export const metadata: Metadata = {
-  title: "Pakux — Find who needs what you sell",
+  title: "Pakux — Leia, kes vajab seda, mida müüd",
   description:
-    "Pakux uses AI to discover companies that need what you sell.",
+    "Pakux kasutab AI-d, et leida ettevõtted, kes vajavad sinu toodet või teenust.",
 };
 
 export default function RootLayout({
@@ -14,8 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="et">
+      <body>
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

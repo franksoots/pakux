@@ -4,18 +4,59 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { createClient } from "../../lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
+  const supabase = createClient();
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function login(e: React.FormEvent) {
+  async function login(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
 
-    setTimeout(() => {
-      router.push("/dashboard");
-    }, 600);
+    setLoading(true);
+    setError("");
+
+    const form = new FormData(e.currentTarget);
+
+    const email = String(form.get("email") || "").trim();
+    const password = String(form.get("password") || "");
+
+    const { error: loginError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+    if (loginError) {
+      setError(loginError.message);
+      setLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
+  }
+
+  async function googleLogin() {
+    setLoading(true);
+    setError("");
+
+    const { error } =
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo:
+            `${window.location.origin}/auth/confirm?next=/dashboard`,
+        },
+      });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    }
   }
 
   return (
@@ -28,9 +69,9 @@ export default function LoginPage() {
 
       <motion.div
         className="pk-auth-card"
-        initial={{ opacity: 0, y: 25, scale: .98 }}
+        initial={{ opacity: 0, y: 25, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: .45 }}
+        transition={{ duration: 0.45 }}
       >
         <div className="pk-auth-logo">
           <Link href="/" className="pk-logo">
@@ -48,11 +89,15 @@ export default function LoginPage() {
           sell.
         </p>
 
-        <form className="pk-auth-form" onSubmit={login}>
+        <form
+          className="pk-auth-form"
+          onSubmit={login}
+        >
           <div className="pk-field">
             <label className="pk-label">Email</label>
             <input
               className="pk-input"
+              name="email"
               type="email"
               placeholder="you@company.com"
               required
@@ -63,20 +108,36 @@ export default function LoginPage() {
             <label className="pk-label">Password</label>
             <input
               className="pk-input"
+              name="password"
               type="password"
               placeholder="••••••••"
               required
             />
           </div>
 
-          <button className="pk-button" disabled={loading}>
-            {loading ? "Signing in..." : "Continue →"}
+          {error && (
+            <div
+              className="pk-auth-note"
+              style={{ color: "#f87171" }}
+            >
+              {error}
+            </div>
+          )}
+
+          <button
+            className="pk-button"
+            disabled={loading}
+          >
+            {loading
+              ? "Signing in..."
+              : "Continue →"}
           </button>
 
           <button
             type="button"
             className="pk-button secondary"
-            onClick={() => router.push("/dashboard")}
+            onClick={googleLogin}
+            disabled={loading}
           >
             Continue with Google
           </button>
@@ -85,10 +146,6 @@ export default function LoginPage() {
         <div className="pk-auth-footer">
           Don't have an account?{" "}
           <Link href="/signup">Create one</Link>
-          <br />
-          <span style={{ display: "block", marginTop: 10 }}>
-            Prototype mode — authentication will be connected later.
-          </span>
         </div>
       </motion.div>
     </main>

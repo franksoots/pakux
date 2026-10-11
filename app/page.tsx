@@ -3,6 +3,8 @@
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../components/language-provider";
+import LanguageSwitcher from "../components/language-switcher";
 
 const demoOffers = [
   "Professional video production for companies in Estonia",
@@ -254,6 +256,8 @@ function FloatingCard({
 }
 
 export default function Home() {
+  const { t } = useLanguage();
+
   const [demoIndex, setDemoIndex] = useState(0);
   const [selectedProspect, setSelectedProspect] = useState(0);
 
@@ -283,17 +287,18 @@ export default function Home() {
         </Link>
 
         <div className="nav-links">
-          <a href="#product">Product</a>
-          <a href="#how-it-works">How it works</a>
-          <a href="#pricing">Pricing</a>
+          <a href="#product">{t.nav.product}</a>
+          <a href="#how-it-works">{t.nav.howItWorks}</a>
+          <a href="#pricing">{t.nav.pricing}</a>
         </div>
 
+	<LanguageSwitcher />
         <div className="nav-actions">
           <Link href="/login" className="nav-login">
-            Log in
+            {t.nav.login}
           </Link>
           <Link href="/signup" className="button button-small">
-            Get started
+            {t.nav.getStarted}
             <span>→</span>
           </Link>
         </div>
@@ -307,35 +312,33 @@ export default function Home() {
           <Reveal>
             <div className="eyebrow">
               <span className="eyebrow-dot" />
-              AI-powered customer discovery
+              {t.hero.eyebrow}
             </div>
           </Reveal>
 
           <Reveal delay={0.08}>
             <h1>
-              Tell us what you sell.
+              {t.hero.title}
               <br />
-              <span>We&apos;ll find who needs it.</span>
+              <span>{t.hero.titleAccent}</span>
             </h1>
           </Reveal>
 
           <Reveal delay={0.16}>
             <p className="hero-description">
-              Pakux researches companies, finds the right people, and prepares
-              personalized outreach — so you can spend less time prospecting
-              and more time selling.
+              {t.hero.description}
             </p>
           </Reveal>
 
           <Reveal delay={0.24}>
             <div className="hero-actions">
               <Link href="/signup" className="button button-large">
-                Start finding customers
+                {t.hero.start}
                 <span>→</span>
               </Link>
 
               <a href="#product" className="text-button">
-                See how it works
+                {t.hero.seeHow}
                 <span>↓</span>
               </a>
             </div>
@@ -363,31 +366,31 @@ export default function Home() {
           <FloatingCard className="hero-card hero-card-one" delay={0}>
             <div className="mini-icon">✦</div>
             <div>
-              <small>AI discovered</small>
-              <strong>347 opportunities</strong>
+              <small>{t.landing.discovered}</small>
+              <strong>347 {t.landing.opportunities}</strong>
             </div>
           </FloatingCard>
 
           <FloatingCard className="hero-card hero-card-two" delay={1}>
             <div className="mini-score">96</div>
             <div>
-              <small>Fit score</small>
-              <strong>Excellent match</strong>
+              <small>{t.landing.fitScore}</small>
+              <strong>{t.landing.excellentMatch}</strong>
             </div>
           </FloatingCard>
 
           <FloatingCard className="hero-card hero-card-three" delay={2}>
             <div className="mini-person">M</div>
             <div>
-              <small>Decision maker</small>
-              <strong>Marketing Director</strong>
+              <small>{t.landing.decisionMaker}</small>
+              <strong>{t.landing.marketingDirector}</strong>
             </div>
           </FloatingCard>
         </div>
 
         <div className="hero-scroll">
           <span />
-          Scroll to explore
+          {t.landing.scroll}
         </div>
       </section>
 
@@ -398,26 +401,26 @@ export default function Home() {
             <strong>
               <Counter value={12481} />
             </strong>
-            <span>companies researched</span>
+            <span>{t.landing.companiesResearched}</span>
           </div>
 
           <div className="stat">
             <strong>
               <Counter value={347} />
             </strong>
-            <span>potential matches</span>
+            <span>{t.landing.potentialMatches}</span>
           </div>
 
           <div className="stat">
             <strong>
               <Counter value={892} />
             </strong>
-            <span>decision makers identified</span>
+            <span>{t.landing.decisionMakersIdentified}</span>
           </div>
 
           <div className="stat">
             <strong>24/7</strong>
-            <span>market discovery</span>
+            <span>{t.landing.marketDiscovery}</span>
           </div>
         </div>
       </section>
@@ -428,13 +431,13 @@ export default function Home() {
           <div className="section-heading centered">
             <div className="eyebrow">
               <span className="eyebrow-dot" />
-              See Pakux in action
+              {t.landing.seePakux}
             </div>
 
             <h2>
-              From a simple idea
+              {t.landing.simpleIdea}
               <br />
-              <span>to a qualified market.</span>
+              <span><span>{t.landing.qualifiedMarket}</span></span>
             </h2>
 
             <p>
@@ -452,16 +455,16 @@ export default function Home() {
                 <i />
                 <i />
               </div>
-              <span>pakux / customer discovery</span>
+              <span>pakux / {t.landing.customerDiscovery}</span>
               <div className="window-status">
                 <span />
-                Live research
+                {t.landing.liveResearch}
               </div>
             </div>
 
             <div className="demo-layout">
               <div className="demo-input-panel">
-                <div className="panel-label">WHAT DO YOU SELL?</div>
+                <div className="panel-label">{t.landing.whatSell}</div>
 
                 <div className="demo-offer">
                   <AnimatePresence mode="wait">
@@ -484,13 +487,13 @@ export default function Home() {
 
                 <div className="research-button">
                   <span className="research-pulse" />
-                  AI researching market
+                  {t.landing.researchMarket}
                   <span className="research-arrow">→</span>
                 </div>
 
                 <div className="demo-progress">
                   <div className="progress-header">
-                    <span>Market research</span>
+                    <span>{t.landing.marketResearch}</span>
                     <span>100%</span>
                   </div>
                   <div className="progress-bar">
@@ -506,8 +509,8 @@ export default function Home() {
               <div className="demo-results">
                 <div className="results-header">
                   <div>
-                    <span className="panel-label">RESEARCH RESULTS</span>
-                    <h3>Potential customers</h3>
+                    <span className="panel-label">{t.landing.researchResults}</span>
+                    <h3>{t.landing.potentialCustomers}</h3>
                   </div>
 
                   <span className="live-badge">
@@ -537,7 +540,7 @@ export default function Home() {
 
                       <div className="result-score">
                         <span>{prospect.score}</span>
-                        <small>% fit</small>
+                        <small>{t.landing.fit}</small>
                       </div>
 
                       <span className="result-arrow">→</span>
@@ -551,7 +554,7 @@ export default function Home() {
                   </div>
 
                   <div className="detail-content">
-                    <span className="detail-label">WHY THIS MATCH?</span>
+                    <span className="detail-label">{t.landing.whyMatch}</span>
                     <p>{prospects[selectedProspect].reason}</p>
                   </div>
                 </div>
@@ -567,17 +570,17 @@ export default function Home() {
           <div className="section-heading">
             <div className="eyebrow">
               <span className="eyebrow-dot" />
-              Built for B2B
+              {t.landing.builtForB2B}
             </div>
 
             <h2>
-              Whatever you sell,
+              {t.landing.whateverSell}
               <br />
-              <span>find who needs it.</span>
+              <span><span>{t.landing.findWhoNeeds}</span></span>
             </h2>
 
             <p>
-              Pakux isn&apos;t tied to one industry. Describe your offer and
+              {t.landing.industryDescription}
               let the AI figure out where the demand is.
             </p>
           </div>
@@ -607,13 +610,13 @@ export default function Home() {
           <div className="section-heading centered">
             <div className="eyebrow">
               <span className="eyebrow-dot" />
-              How it works
+              {t.landing.howItWorks}
             </div>
 
             <h2>
-              Prospecting,
+              {t.landing.prospecting}
               <br />
-              <span>without the busywork.</span>
+              <span><span>{t.landing.withoutBusywork}</span></span>
             </h2>
           </div>
         </Reveal>
@@ -624,10 +627,10 @@ export default function Home() {
               <div className="step-number">01</div>
               <div className="step-line" />
               <div className="step-content">
-                <span>Describe your offer</span>
-                <h3>Tell Pakux what you sell.</h3>
+                <span>{t.landing.describeOffer}</span>
+                <h3>{t.landing.tellPakux}</h3>
                 <p>
-                  Give us a simple description of your product or service,
+                  {t.landing.describeOfferText}
                   target location and ideal customer.
                 </p>
               </div>
@@ -639,10 +642,10 @@ export default function Home() {
               <div className="step-number">02</div>
               <div className="step-line" />
               <div className="step-content">
-                <span>Research the market</span>
-                <h3>We map the opportunity.</h3>
+                <span>{t.landing.researchMarketStep}</span>
+                <h3>{t.landing.mapOpportunity}</h3>
                 <p>
-                  Pakux searches across companies and identifies businesses
+                  {t.landing.researchText}
                   that could benefit from what you offer.
                 </p>
               </div>
@@ -654,10 +657,10 @@ export default function Home() {
               <div className="step-number">03</div>
               <div className="step-line" />
               <div className="step-content">
-                <span>Find the right person</span>
-                <h3>Go beyond company names.</h3>
+                <span>{t.landing.findPerson}</span>
+                <h3>{t.landing.beyondCompany}</h3>
                 <p>
-                  Discover relevant roles and contacts so you know who to
+                  {t.landing.contactText}
                   approach inside each company.
                 </p>
               </div>
@@ -668,10 +671,10 @@ export default function Home() {
             <div className="step">
               <div className="step-number">04</div>
               <div className="step-content">
-                <span>Start the conversation</span>
-                <h3>Send something personal.</h3>
+                <span>{t.landing.startConversation}</span>
+                <h3>{t.landing.sendPersonal}</h3>
                 <p>
-                  Pakux creates personalized outreach based on each company,
+                  {t.landing.outreachText}
                   giving you a head start on the conversation.
                 </p>
               </div>
@@ -686,15 +689,15 @@ export default function Home() {
           <Reveal>
             <div className="eyebrow">
               <span className="eyebrow-dot" />
-              The Pakux engine
+              {t.landing.pakuxEngine}
             </div>
 
             <h2>
-              Turn the
+              {t.landing.unknownMarket}
               <br />
-              <span>unknown market</span>
+              <span>{t.landing.unknownMarketAccent}</span>
               <br />
-              into a map.
+              {t.landing.intoMap}
             </h2>
 
             <p>
@@ -706,15 +709,15 @@ export default function Home() {
             <div className="universe-points">
               <div>
                 <span>01</span>
-                <p>Market discovery</p>
+                <p>{t.landing.marketDiscoveryPoint}</p>
               </div>
               <div>
                 <span>02</span>
-                <p>Opportunity scoring</p>
+                <p>{t.landing.opportunityScoring}</p>
               </div>
               <div>
                 <span>03</span>
-                <p>Contact discovery</p>
+                <p>{t.landing.contactDiscovery}</p>
               </div>
             </div>
           </Reveal>
@@ -726,7 +729,7 @@ export default function Home() {
 
             <div className="universe-center">
               <div className="center-pulse" />
-              <strong>YOUR<br />OFFER</strong>
+              <strong>{t.landing.yourOffer}</strong>
             </div>
 
             <FloatingCard
@@ -735,7 +738,7 @@ export default function Home() {
             >
               <span className="card-icon">◎</span>
               <div>
-                <small>Companies found</small>
+                <small>{t.landing.companiesFound}</small>
                 <strong>12,481</strong>
               </div>
             </FloatingCard>
@@ -746,7 +749,7 @@ export default function Home() {
             >
               <span className="card-icon">✦</span>
               <div>
-                <small>High-fit prospects</small>
+                <small>{t.landing.highFit}</small>
                 <strong>347</strong>
               </div>
             </FloatingCard>
@@ -761,25 +764,25 @@ export default function Home() {
             <div className="outreach-copy">
               <div className="eyebrow">
                 <span className="eyebrow-dot" />
-                From research to outreach
+                {t.landing.fromResearch}
               </div>
 
               <h2>
-                Don&apos;t just find
+                {t.landing.dontJustFind}
                 <br />
-                <span>the company.</span>
+                <span><span>{t.landing.company}</span></span>
                 <br />
-                Find the angle.
+                {t.landing.findAngle}
               </h2>
 
               <p>
-                Every prospect is different. Pakux uses the research it
+                {t.landing.outreachDescription}
                 gathered to create an outreach starting point that feels
                 relevant to the company you&apos;re contacting.
               </p>
 
               <Link href="/signup" className="text-button bright">
-                Create your first prospect list
+                {t.landing.createProspectList}
                 <span>→</span>
               </Link>
             </div>
@@ -791,7 +794,7 @@ export default function Home() {
                   <strong>Markus · Marketing Director</strong>
                   <span>Baltic Property Group</span>
                 </div>
-                <span className="email-status">AI DRAFT</span>
+                <span className="email-status">{t.landing.aiDraft}</span>
               </div>
 
               <div className="email-subject">
@@ -904,7 +907,7 @@ export default function Home() {
               <ul>
                 <li>✓ Everything in Starter</li>
                 <li>✓ Larger prospect lists</li>
-                <li>✓ Contact discovery</li>
+                <li>✓ {t.landing.contactDiscovery}</li>
                 <li>✓ Advanced personalization</li>
                 <li>✓ Outreach workflows</li>
               </ul>
@@ -966,7 +969,7 @@ export default function Home() {
           </h2>
 
           <p>
-            Tell Pakux what you sell. Let the AI find the companies,
+            {t.landing.tellPakux} Let the AI find the companies,
             opportunities and people worth talking to.
           </p>
 
@@ -997,7 +1000,7 @@ export default function Home() {
 
           <div className="footer-links">
             <a href="#product">Product</a>
-            <a href="#how-it-works">How it works</a>
+            <a href="#how-it-works">{t.landing.howItWorks}</a>
             <a href="#pricing">Pricing</a>
             <Link href="/login">Log in</Link>
             <Link href="/signup">Get started</Link>

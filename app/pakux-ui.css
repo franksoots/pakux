@@ -1144,3 +1144,35 @@ button {
     display: none;
   }
 } 
+.pk-language-switcher {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  padding: 3px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: rgba(255,255,255,.035) !important;
+}
+
+.pk-language-option {
+  width: 32px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: inherit !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  opacity: .45 !important;
+}
+
+.pk-language-option.active {
+  opacity: 1 !important;
+  background: rgba(255,255,255,.09) !important;
+}
+
